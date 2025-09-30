@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Project Environment Manager</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+					sans-serif;
+				background-color: hsl(0 0% 98%);
+				color: hsl(222.2 84% 4.9%);
+				line-height: 1.5;
+			}
+
+			.container {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 2rem;
+			}
+
+			.header {
+				margin-bottom: 2rem;
+			}
+
+			.header h1 {
+				font-size: 2rem;
+				font-weight: 700;
+				margin-bottom: 0.5rem;
+			}
+
+			.header p {
+				color: hsl(215.4 16.3% 46.9%);
+				font-size: 1rem;
+			}
+
+			.card {
+				background: white;
+				border: 1px solid hsl(214.3 31.8% 91.4%);
+				border-radius: 0.5rem;
+				padding: 1.5rem;
+				margin-bottom: 1.5rem;
+			}
+
+			.card-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1rem;
+				padding-bottom: 0.75rem;
+				border-bottom: 1px solid hsl(214.3 31.8% 91.4%);
+			}
+
+			.card-title {
+				font-size: 1.25rem;
+				font-weight: 600;
+			}
+
+			.button {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				border-radius: 0.375rem;
+				font-size: 0.875rem;
+				font-weight: 500;
+				height: 2.25rem;
+				padding: 0 1rem;
+				border: 1px solid transparent;
+				cursor: pointer;
+				transition: all 0.2s;
+				text-decoration: none;
+				gap: 0.5rem;
+			}
+
+			.button-primary {
+				background: hsl(222.2 47.4% 11.2%);
+				color: hsl(210 40% 98%);
+			}
+
+			.button-primary:hover {
+				background: hsl(222.2 47.4% 11.2% / 0.9);
+			}
+
+			.button-secondary {
+				background: hsl(210 40% 98%);
+				color: hsl(222.2 47.4% 11.2%);
+				border: 1px solid hsl(214.3 31.8% 91.4%);
+			}
+
+			.button-secondary:hover {
+				background: hsl(210 40% 96%);
+			}
+
+			.button-destructive {
+				background: hsl(0 72.2% 50.6%);
+				color: hsl(210 40% 98%);
+			}
+
+			.button-destructive:hover {
+				background: hsl(0 72.2% 50.6% / 0.9);
+			}
+
+			.button-sm {
+				height: 1.75rem;
+				padding: 0 0.75rem;
+				font-size: 0.75rem;
+			}
+
+			.input {
+				display: flex;
+				height: 2.25rem;
+				width: 100%;
+				border-radius: 0.375rem;
+				border: 1px solid hsl(214.3 31.8% 91.4%);
+				background: transparent;
+				padding: 0.5rem 0.75rem;
+				font-size: 0.875rem;
+			}
+
+			.input:focus {
+				outline: none;
+				border-color: hsl(222.2 47.4% 11.2%);
+				box-shadow: 0 0 0 2px hsl(222.2 47.4% 11.2% / 0.2);
+			}
+
+			.textarea {
+				min-height: 4rem;
+				resize: vertical;
+				font-family: ui-monospace, monospace;
+			}
+
+			.select {
+				height: 2.25rem;
+				border-radius: 0.375rem;
+				border: 1px solid hsl(214.3 31.8% 91.4%);
+				background: transparent;
+				padding: 0.5rem 0.75rem;
+				font-size: 0.875rem;
+			}
+
+			.label {
+				font-size: 0.875rem;
+				font-weight: 500;
+				margin-bottom: 0.5rem;
+				display: block;
+			}
+
+			.form-group {
+				margin-bottom: 1rem;
+			}
+
+			.grid {
+				display: grid;
+				gap: 1rem;
+			}
+
+			.grid-cols-2 {
+				grid-template-columns: repeat(2, 1fr);
+			}
+
+			.alert {
+				border: 1px solid transparent;
+				border-radius: 0.5rem;
+				padding: 1rem;
+				margin-bottom: 1rem;
+			}
+
+			.alert-warning {
+				border-color: hsl(38 92% 50% / 0.2);
+				background: hsl(48 96% 89%);
+				color: hsl(25 95% 53%);
+			}
+
+			.alert-info {
+				border-color: hsl(213 92% 50% / 0.2);
+				background: hsl(213 96% 89%);
+				color: hsl(213 95% 53%);
+			}
+
+			.code-block {
+				background: hsl(210 40% 98%);
+				border: 1px solid hsl(214.3 31.8% 91.4%);
+				border-radius: 0.375rem;
+				padding: 1rem;
+				font-family: ui-monospace, monospace;
+				font-size: 0.875rem;
+				white-space: pre-wrap;
+				position: relative;
+				margin: 1rem 0;
+			}
+
+			.copy-btn {
+				position: absolute;
+				top: 0.5rem;
+				right: 0.5rem;
+				background: hsl(222.2 47.4% 11.2%);
+				color: white;
+				border: none;
+				border-radius: 0.25rem;
+				padding: 0.25rem 0.5rem;
+				font-size: 0.75rem;
+				cursor: pointer;
+			}
+
+			.copy-btn:hover {
+				background: hsl(222.2 47.4% 11.2% / 0.8);
+			}
+
+			.section {
+				margin-top: 1.5rem;
+				padding-top: 1rem;
+				border-top: 1px solid hsl(214.3 31.8% 91.4%);
+			}
+
+			.section-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1rem;
+			}
+
+			.section-title {
+				font-weight: 600;
+				font-size: 1.125rem;
+			}
+
+			.docker-item {
+				border: 1px solid hsl(214.3 31.8% 91.4%);
+				border-radius: 0.375rem;
+				padding: 1rem;
+				margin-bottom: 1rem;
+				background: hsl(210 40% 98%);
+			}
+
+			.docker-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 0.75rem;
+			}
+
+			.docker-title {
+				font-weight: 600;
+			}
+
+			.flex {
+				display: flex;
+			}
+
+			.gap-2 {
+				gap: 0.5rem;
+			}
+
+			.mt-2 {
+				margin-top: 0.5rem;
+			}
+
+			.mt-4 {
+				margin-top: 1rem;
+			}
+
+			.mb-2 {
+				margin-bottom: 0.5rem;
+			}
+
+			.mb-4 {
+				margin-bottom: 1rem;
+			}
+
+			.hidden {
+				display: none;
+			}
+
+			.modal {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0, 0, 0, 0.5);
+				z-index: 1000;
+			}
+
+			.modal-content {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				background: white;
+				border-radius: 0.5rem;
+				padding: 2rem;
+				max-width: 600px;
+				width: 90%;
+				max-height: 90vh;
+				overflow-y: auto;
+			}
+
+			.modal-header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 1.5rem;
+				padding-bottom: 1rem;
+				border-bottom: 1px solid hsl(214.3 31.8% 91.4%);
+			}
+
+			.modal-title {
+				font-size: 1.25rem;
+				font-weight: 600;
+			}
+
+			.close-btn {
+				background: none;
+				border: none;
+				font-size: 1.5rem;
+				cursor: pointer;
+				color: hsl(215.4 16.3% 46.9%);
+				padding: 0.25rem;
+			}
+
+			.close-btn:hover {
+				color: hsl(222.2 84% 4.9%);
+			}
+
+			@media (max-width: 768px) {
+				.grid-cols-2 {
+					grid-template-columns: 1fr;
+				}
+
+				.container {
+					padding: 1rem;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="header">
+				<h1>Project Environment Manager</h1>
+				<p>Manage your repositories, Docker configurations, and team members</p>
+			</div>
+
+			<!-- Project Information -->
+			<div class="card">
+				<div class="card-header">
+					<h2 class="card-title">Project Information</h2>
+				</div>
+				<div class="form-group">
+					<label for="projectName" class="label">Project Name</label>
+					<input
+						type="text"
+						id="projectName"
+						class="input"
+						placeholder="Enter your project name"
+					/>
+				</div>
+				<button class="button button-primary" onclick="updateProjectInfo()">
+					Update Project Info
+				</button>
+				<div id="projectDisplay" class="mt-4">
+					<strong>Current Project:</strong>
+					<span id="projectNameDisplay">[Not Set]</span>
+				</div>
+			</div>
+
+			<!-- Repositories -->
+			<div class="card">
+				<div class="card-header">
+					<h2 class="card-title">Repositories</h2>
+					<div class="flex gap-2">
+						<button class="button button-secondary" onclick="exportData()">
+							Export JSON
+						</button>
+						<button class="button button-secondary" onclick="importData()">
+							Import JSON
+						</button>
+						<button class="button button-secondary" onclick="saveToHtmlFile()">
+							Export HTML
+						</button>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="repoSelector" class="label">Select Repository</label>
+					<select
+						id="repoSelector"
+						class="select"
+						onchange="selectRepository()"
+					>
+						<option value="">-- Select Repository --</option>
+						<option value="add-new">+ Add New Repository</option>
+					</select>
+				</div>
+
+				<div id="addRepoForm" class="hidden">
+					<div class="alert alert-info mb-4">
+						<strong>Add New Repository</strong>
+					</div>
+					<div class="grid grid-cols-2 mb-4">
+						<div class="form-group">
+							<label for="newRepoName" class="label">Repository Name</label>
+							<input
+								type="text"
+								id="newRepoName"
+								class="input"
+								placeholder="Repository Name"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="newRepoUrl" class="label">Repository URL</label>
+							<input
+								type="text"
+								id="newRepoUrl"
+								class="input"
+								placeholder="https://github.com/org/repo"
+							/>
+						</div>
+					</div>
+					<div class="flex gap-2">
+						<button class="button button-primary" onclick="addRepository()">
+							Add Repository
+						</button>
+						<button class="button button-secondary" onclick="cancelAddRepo()">
+							Cancel
+						</button>
+					</div>
+				</div>
+
+				<div id="repoDetails" class="hidden">
+					<!-- Selected repository details will appear here -->
+				</div>
+			</div>
+
+			<!-- Team Members -->
+			<div class="card">
+				<div class="card-header">
+					<h2 class="card-title">Team Members</h2>
+				</div>
+				<div class="grid grid-cols-2 mb-4">
+					<div class="form-group">
+						<label for="memberName" class="label">Member Name</label>
+						<input
+							type="text"
+							id="memberName"
+							class="input"
+							placeholder="Member Name"
+						/>
+					</div>
+					<div class="form-group">
+						<label for="memberRole" class="label">Role</label>
+						<select id="memberRole" class="select">
+							<option value="Frontend">Frontend</option>
+							<option value="Backend">Backend</option>
+							<option value="AI/ML">AI/ML</option>
+							<option value="DevOps">DevOps</option>
+							<option value="QA">QA</option>
+							<option value="Design">Design</option>
+							<option value="PM">PM</option>
+						</select>
+					</div>
+				</div>
+				<button class="button button-primary" onclick="addMember()">
+					Add Member
+				</button>
+
+				<div id="teamLists" class="mt-4">
+					<!-- Team lists will be rendered here -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Environment Variables Modal -->
+		<div id="envModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">Environment Variables</h3>
+					<button class="close-btn" onclick="closeEnvModal()">&times;</button>
+				</div>
+
+				<div class="form-group">
+					<label class="label">Bulk Import (.env file content)</label>
+					<textarea
+						id="bulkEnvInput"
+						class="input textarea"
+						placeholder="Paste your .env file content here...&#10;NODE_ENV=development&#10;API_KEY=your_api_key&#10;DATABASE_URL=your_db_url"
+					></textarea>
+					<button class="button button-secondary mt-2" onclick="parseBulkEnv()">
+						Parse .env Content
+					</button>
+				</div>
+
+				<div class="form-group">
+					<div class="grid grid-cols-2">
+						<div>
+							<label class="label">Variable Name</label>
+							<input
+								type="text"
+								id="newEnvName"
+								class="input"
+								placeholder="VARIABLE_NAME"
+							/>
+						</div>
+						<div>
+							<label class="label">Value</label>
+							<input
+								type="text"
+								id="newEnvValue"
+								class="input"
+								placeholder="variable_value"
+							/>
+						</div>
+					</div>
+					<button class="button button-primary mt-2" onclick="addEnvVar()">
+						Add Variable
+					</button>
+				</div>
+
+				<div id="currentEnvVars">
+					<!-- Current env vars will be displayed here -->
+				</div>
+
+				<div class="flex gap-2 mt-4" style="justify-content: flex-end">
+					<button
+						class="button button-secondary"
+						onclick="copyCurrentEnvVars()"
+					>
+						Copy All
+					</button>
+					<button class="button button-primary" onclick="closeEnvModal()">
+						Done
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Docker Configuration Modal -->
+		<div id="dockerModal" class="modal">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title">Docker Configuration</h3>
+					<button class="close-btn" onclick="closeDockerModal()">
+						&times;
+					</button>
+				</div>
+
+				<div class="grid grid-cols-2 mb-4">
+					<div class="form-group">
+						<label class="label">Container Name</label>
+						<input
+							type="text"
+							id="dockerName"
+							class="input"
+							placeholder="my-app-container"
+						/>
+					</div>
+					<div class="form-group">
+						<label class="label">Docker Image</label>
+						<input
+							type="text"
+							id="dockerImage"
+							class="input"
+							placeholder="node:18-alpine"
+						/>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-2 mb-4">
+					<div class="form-group">
+						<label class="label">Port Mapping</label>
+						<input
+							type="text"
+							id="dockerPort"
+							class="input"
+							placeholder="3000:3000"
+						/>
+					</div>
+					<div class="form-group">
+						<label class="label">Volume Mapping</label>
+						<input
+							type="text"
+							id="dockerVolume"
+							class="input"
+							placeholder="./src:/app/src"
+						/>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="label">Environment Variables (Bulk Import)</label>
+					<textarea
+						id="dockerBulkEnv"
+						class="input textarea"
+						placeholder="Paste .env content here..."
+					></textarea>
+					<button
+						class="button button-secondary mt-2"
+						onclick="parseDockerBulkEnv()"
+					>
+						Parse .env Content
+					</button>
+				</div>
+
+				<div class="grid grid-cols-2 mb-4">
+					<div class="form-group">
+						<label class="label">Variable Name</label>
+						<input
+							type="text"
+							id="dockerEnvName"
+							class="input"
+							placeholder="VARIABLE_NAME"
+						/>
+					</div>
+					<div class="form-group">
+						<label class="label">Value</label>
+						<input
+							type="text"
+							id="dockerEnvValue"
+							class="input"
+							placeholder="variable_value"
+						/>
+					</div>
+				</div>
+				<button
+					class="button button-secondary mb-4"
+					onclick="addDockerEnvVar()"
+				>
+					Add Variable
+				</button>
+
+				<div id="dockerEnvVarsList">
+					<!-- Docker env vars will be displayed here -->
+				</div>
+
+				<div class="flex gap-2 mt-4" style="justify-content: flex-end">
+					<button class="button button-secondary" onclick="closeDockerModal()">
+						Cancel
+					</button>
+					<button class="button button-primary" onclick="saveDockerConfig()">
+						Save Docker Config
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// Data structures
+			const repositories = {
+				"User End React": {
+					url: "https://github.com/Easeworkai-com/Easework_User_End_React",
+					branch: "main",
+					envVars: [],
+					dockerConfigs: [],
+				},
+			};
+
+			const teamMembers = {
+				Frontend: [],
+				Backend: [],
+				"AI/ML": [],
+				DevOps: [],
+				QA: [],
+				Design: [],
+				PM: [],
+			};
+
+			let currentRepo = null;
+			let currentEnvRepo = null;
+			let tempDockerEnvVars = [];
+			let editingDockerIndex = -1;
+
+			// Utility functions
+			function escapeHTML(text) {
+				return (text || "").toString().replace(
+					/[&<>"']/g,
+					(c) =>
+						({
+							"&": "&amp;",
+							"<": "&lt;",
+							">": "&gt;",
+							'"': "&quot;",
+							"'": "&#39;",
+						}[c])
+				);
+			}
+
+			function copyToClipboard(text, successMessage) {
+				navigator.clipboard
+					.writeText(text)
+					.then(() => alert(successMessage))
+					.catch(() => {
+						const textarea = document.createElement("textarea");
+						textarea.value = text;
+						document.body.appendChild(textarea);
+						textarea.select();
+						document.execCommand("copy");
+						document.body.removeChild(textarea);
+						alert(successMessage);
+					});
+			}
+
+			function copyEnvBlock(button) {
+				const codeBlock = button.parentElement;
+				let text = codeBlock.textContent.replace(/Copy|📋/, "").trim();
+				copyToClipboard(text, "Copied to clipboard!");
+			}
+
+			// Project Information
+			function updateProjectInfo() {
+				const projectName = document.getElementById("projectName").value.trim();
+				document.getElementById("projectNameDisplay").textContent =
+					projectName || "[Not Set]";
+			}
+
+			// Repository Management
+			function initRepositories() {
+				const selector = document.getElementById("repoSelector");
+				while (selector.options.length > 2) {
+					selector.remove(2);
+				}
+
+				Object.keys(repositories).forEach((repoName) => {
+					const option = document.createElement("option");
+					option.value = repoName;
+					option.textContent = repoName;
+					selector.appendChild(option);
+				});
+			}
+
+			function selectRepository() {
+				const selectedRepo = document.getElementById("repoSelector").value;
+				const addForm = document.getElementById("addRepoForm");
+				const repoDetails = document.getElementById("repoDetails");
+
+				if (selectedRepo === "add-new") {
+					addForm.classList.remove("hidden");
+					repoDetails.classList.add("hidden");
+					currentRepo = null;
+					document.getElementById("newRepoName").focus();
+					return;
+				}
+
+				addForm.classList.add("hidden");
+
+				if (selectedRepo) {
+					currentRepo = selectedRepo;
+					showRepoDetails(selectedRepo);
+					repoDetails.classList.remove("hidden");
+				} else {
+					currentRepo = null;
+					repoDetails.classList.add("hidden");
+				}
+			}
+
+			function addRepository() {
+				const name = document.getElementById("newRepoName").value.trim();
+				const url = document.getElementById("newRepoUrl").value.trim();
+
+				if (!name || !url) {
+					alert("Please enter both repository name and URL");
+					return;
+				}
+
+				if (repositories[name]) {
+					alert("A repository with this name already exists");
+					return;
+				}
+
+				repositories[name] = {
+					url: url,
+					branch: "main",
+					envVars: [],
+					dockerConfigs: [],
+				};
+
+				document.getElementById("newRepoName").value = "";
+				document.getElementById("newRepoUrl").value = "";
+				document.getElementById("addRepoForm").classList.add("hidden");
+
+				initRepositories();
+				document.getElementById("repoSelector").value = name;
+				selectRepository();
+			}
+
+			function cancelAddRepo() {
+				document.getElementById("addRepoForm").classList.add("hidden");
+				document.getElementById("repoSelector").value = currentRepo || "";
+			}
+
+			function deleteRepository(repoName) {
+				if (
+					!confirm(
+						`Are you sure you want to delete "${repoName}" and all its configurations?`
+					)
+				) {
+					return;
+				}
+
+				delete repositories[repoName];
+				currentRepo = null;
+				initRepositories();
+				document.getElementById("repoSelector").value = "";
+				document.getElementById("repoDetails").classList.add("hidden");
+			}
+
+			function updateRepoBranch(repoName, branchName) {
+				if (repositories[repoName]) {
+					repositories[repoName].branch = branchName;
+				}
+			}
+
+			function showRepoDetails(repoName) {
+				const repo = repositories[repoName];
+				const container = document.getElementById("repoDetails");
+
+				container.innerHTML = `
+                <div class="alert alert-info mb-4">
+                    <strong>Repository:</strong> ${escapeHTML(repoName)}
+                    <button class="button button-destructive button-sm" onclick="deleteRepository('${repoName}')" style="float: right;">
+                        Delete Repository
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 mb-4">
+                    <div class="form-group">
+                        <label class="label">Repository URL</label>
+                        <input type="text" class="input" value="${escapeHTML(
+													repo.url
+												)}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="label">Branch</label>
+                        <input type="text" class="input" value="${escapeHTML(
+													repo.branch
+												)}" 
+                               onchange="updateRepoBranch('${repoName}', this.value)">
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Environment Variables (${
+													repo.envVars.length
+												})</span>
+                        <button class="button button-primary button-sm" onclick="showEnvModal('${repoName}')">
+                            Manage Variables
+                        </button>
+                    </div>
+                    <div id="envVarsDisplay-${repoName}"></div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <span class="section-title">Docker Configurations (${
+													repo.dockerConfigs.length
+												})</span>
+                        <button class="button button-primary button-sm" onclick="showDockerModal('${repoName}')">
+                            Add Docker Config
+                        </button>
+                    </div>
+                    <div id="dockerConfigsDisplay-${repoName}"></div>
+                </div>
+            `;
+
+				renderEnvVarsDisplay(repoName);
+				renderDockerConfigsDisplay(repoName);
+			}
+
+			// Environment Variables
+			function showEnvModal(repoName) {
+				currentEnvRepo = repoName;
+				document.getElementById("bulkEnvInput").value = "";
+				document.getElementById("newEnvName").value = "";
+				document.getElementById("newEnvValue").value = "";
+				document.getElementById("envModal").style.display = "block";
+				renderCurrentEnvVars();
+			}
+
+			function closeEnvModal() {
+				document.getElementById("envModal").style.display = "none";
+				if (currentEnvRepo) {
+					renderEnvVarsDisplay(currentEnvRepo);
+					// Update the count in the header
+					const repo = repositories[currentEnvRepo];
+					const headerElements = document.querySelectorAll(
+						`#repoDetails .section-title`
+					);
+					if (headerElements[0]) {
+						headerElements[0].textContent = `Environment Variables (${repo.envVars.length})`;
+					}
+				}
+			}
+
+			function parseBulkEnv() {
+				const envText = document.getElementById("bulkEnvInput").value.trim();
+				if (!envText || !currentEnvRepo) return;
+
+				const repo = repositories[currentEnvRepo];
+				if (!repo) return;
+
+				const lines = envText.split("\n");
+				lines.forEach((line) => {
+					line = line.trim();
+					if (!line || line.startsWith("#")) return;
+
+					const parts = line.split("=");
+					if (parts.length >= 2) {
+						const name = parts[0].trim();
+						const value = parts.slice(1).join("=").trim();
+
+						const existingIndex = repo.envVars.findIndex(
+							(v) => v.name === name
+						);
+						if (existingIndex >= 0) {
+							repo.envVars[existingIndex].value = value;
+						} else {
+							repo.envVars.push({ name, value });
+						}
+					}
+				});
+
+				renderCurrentEnvVars();
+				document.getElementById("bulkEnvInput").value = "";
+			}
+
+			function addEnvVar() {
+				const name = document.getElementById("newEnvName").value.trim();
+				const value = document.getElementById("newEnvValue").value.trim();
+
+				if (!name || !currentEnvRepo) {
+					alert("Please enter variable name");
+					return;
+				}
+
+				const repo = repositories[currentEnvRepo];
+				if (!repo) return;
+
+				const existingIndex = repo.envVars.findIndex((v) => v.name === name);
+				if (existingIndex >= 0) {
+					repo.envVars[existingIndex].value = value;
+				} else {
+					repo.envVars.push({ name, value });
+				}
+
+				document.getElementById("newEnvName").value = "";
+				document.getElementById("newEnvValue").value = "";
+				renderCurrentEnvVars();
+			}
+
+			function removeEnvVar(index) {
+				const repo = repositories[currentEnvRepo];
+				if (!repo) return;
+
+				repo.envVars.splice(index, 1);
+				renderCurrentEnvVars();
+			}
+
+			function renderCurrentEnvVars() {
+				const container = document.getElementById("currentEnvVars");
+				const repo = repositories[currentEnvRepo];
+
+				if (!repo || repo.envVars.length === 0) {
+					container.innerHTML =
+						'<div class="alert alert-info">No environment variables added yet</div>';
+					return;
+				}
+
+				const envText = repo.envVars
+					.map((v) => `${v.name}=${v.value}`)
+					.join("\n");
+
+				container.innerHTML = `
+                <h4 class="mb-2">Current Variables (${repo.envVars.length})</h4>
+                <div class="code-block">
+                    
+                    ${escapeHTML(envText)}
+                </div>
+                <div style="max-height: 200px; overflow-y: auto; border: 1px solid hsl(214.3 31.8% 91.4%); border-radius: 0.375rem;">
+                    ${repo.envVars
+											.map(
+												(envVar, index) => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid hsl(214.3 31.8% 91.4%);">
+                            <span><strong>${escapeHTML(
+															envVar.name
+														)}</strong> = ${escapeHTML(envVar.value)}</span>
+                            <button class="button button-destructive button-sm" onclick="removeEnvVar(${index})">Remove</button>
+                        </div>
+                    `
+											)
+											.join("")}
+                </div>
+            `;
+			}
+
+			function renderEnvVarsDisplay(repoName) {
+				const container = document.getElementById(`envVarsDisplay-${repoName}`);
+				const repo = repositories[repoName];
+
+				if (!repo || repo.envVars.length === 0) {
+					container.innerHTML =
+						'<p style="color: hsl(215.4 16.3% 46.9%); font-style: italic;">No environment variables configured</p>';
+					return;
+				}
+
+				const envText = repo.envVars
+					.map((v) => `${v.name}=${v.value}`)
+					.join("\n");
+
+				container.innerHTML = `
+                <div class="code-block">
+                    
+                    ${escapeHTML(envText)}
+                </div>
+            `;
+			}
+
+			function copyCurrentEnvVars() {
+				const repo = repositories[currentEnvRepo];
+				if (!repo || repo.envVars.length === 0) {
+					alert("No environment variables to copy");
+					return;
+				}
+
+				const envText = repo.envVars
+					.map((v) => `${v.name}=${v.value}`)
+					.join("\n");
+				copyToClipboard(envText, "Environment variables copied to clipboard!");
+			}
+
+			// Docker Configuration
+			function showDockerModal(repoName) {
+				currentRepo = repoName;
+				tempDockerEnvVars = [];
+				editingDockerIndex = -1;
+
+				// Reset form
+				document.getElementById("dockerName").value = "";
+				document.getElementById("dockerImage").value = "";
+				document.getElementById("dockerPort").value = "";
+				document.getElementById("dockerVolume").value = "";
+				document.getElementById("dockerBulkEnv").value = "";
+				document.getElementById("dockerEnvName").value = "";
+				document.getElementById("dockerEnvValue").value = "";
+
+				document.getElementById("dockerModal").style.display = "block";
+				renderDockerEnvVarsList();
+			}
+
+			function closeDockerModal() {
+				document.getElementById("dockerModal").style.display = "none";
+				if (currentRepo) {
+					renderDockerConfigsDisplay(currentRepo);
+					// Update count in header
+					const repo = repositories[currentRepo];
+					const headerElements = document.querySelectorAll(
+						`#repoDetails .section-title`
+					);
+					if (headerElements[1]) {
+						headerElements[1].textContent = `Docker Configurations (${repo.dockerConfigs.length})`;
+					}
+				}
+			}
+
+			function parseDockerBulkEnv() {
+				const envText = document.getElementById("dockerBulkEnv").value.trim();
+				if (!envText) return;
+
+				const lines = envText.split("\n");
+				lines.forEach((line) => {
+					line = line.trim();
+					if (!line || line.startsWith("#")) return;
+
+					const parts = line.split("=");
+					if (parts.length >= 2) {
+						const name = parts[0].trim();
+						const value = parts.slice(1).join("=").trim();
+
+						const existingIndex = tempDockerEnvVars.findIndex(
+							(v) => v.name === name
+						);
+						if (existingIndex >= 0) {
+							tempDockerEnvVars[existingIndex].value = value;
+						} else {
+							tempDockerEnvVars.push({ name, value });
+						}
+					}
+				});
+
+				renderDockerEnvVarsList();
+				document.getElementById("dockerBulkEnv").value = "";
+			}
+
+			function addDockerEnvVar() {
+				const name = document.getElementById("dockerEnvName").value.trim();
+				const value = document.getElementById("dockerEnvValue").value.trim();
+
+				if (!name) {
+					alert("Please enter variable name");
+					return;
+				}
+
+				const existingIndex = tempDockerEnvVars.findIndex(
+					(v) => v.name === name
+				);
+				if (existingIndex >= 0) {
+					tempDockerEnvVars[existingIndex].value = value;
+				} else {
+					tempDockerEnvVars.push({ name, value });
+				}
+
+				document.getElementById("dockerEnvName").value = "";
+				document.getElementById("dockerEnvValue").value = "";
+				renderDockerEnvVarsList();
+			}
+
+			function removeDockerEnvVar(index) {
+				tempDockerEnvVars.splice(index, 1);
+				renderDockerEnvVarsList();
+			}
+
+			function renderDockerEnvVarsList() {
+				const container = document.getElementById("dockerEnvVarsList");
+
+				if (tempDockerEnvVars.length === 0) {
+					container.innerHTML =
+						'<div class="alert alert-info">No environment variables added yet</div>';
+					return;
+				}
+
+				const envText = tempDockerEnvVars
+					.map((v) => `${v.name}=${v.value}`)
+					.join("\n");
+
+				container.innerHTML = `
+                <h4 class="mb-2">Environment Variables (${
+									tempDockerEnvVars.length
+								})</h4>
+                <div class="code-block">
+                    
+                    ${escapeHTML(envText)}
+                </div>
+                <div style="max-height: 200px; overflow-y: auto; border: 1px solid hsl(214.3 31.8% 91.4%); border-radius: 0.375rem;">
+                    ${tempDockerEnvVars
+											.map(
+												(envVar, index) => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid hsl(214.3 31.8% 91.4%);">
+                            <span><strong>${escapeHTML(
+															envVar.name
+														)}</strong> = ${escapeHTML(envVar.value)}</span>
+                            <button class="button button-destructive button-sm" onclick="removeDockerEnvVar(${index})">Remove</button>
+                        </div>
+                    `
+											)
+											.join("")}
+                </div>
+            `;
+			}
+
+			function saveDockerConfig() {
+				const name = document.getElementById("dockerName").value.trim();
+				const image = document.getElementById("dockerImage").value.trim();
+				const port = document.getElementById("dockerPort").value.trim();
+				const volume = document.getElementById("dockerVolume").value.trim();
+
+				if (!name || !image) {
+					alert("Please enter container name and image");
+					return;
+				}
+
+				const repo = repositories[currentRepo];
+				if (!repo) return;
+
+				const dockerConfig = {
+					id: Date.now(),
+					name: name,
+					image: image,
+					port: port,
+					volume: volume,
+					envVars: [...tempDockerEnvVars],
+				};
+
+				if (editingDockerIndex >= 0) {
+					repo.dockerConfigs[editingDockerIndex] = dockerConfig;
+				} else {
+					repo.dockerConfigs.push(dockerConfig);
+				}
+
+				closeDockerModal();
+			}
+
+			function renderDockerConfigsDisplay(repoName) {
+				const container = document.getElementById(
+					`dockerConfigsDisplay-${repoName}`
+				);
+				const repo = repositories[repoName];
+
+				if (!repo || repo.dockerConfigs.length === 0) {
+					container.innerHTML =
+						'<p style="color: hsl(215.4 16.3% 46.9%); font-style: italic;">No Docker configurations added yet</p>';
+					return;
+				}
+
+				container.innerHTML = repo.dockerConfigs
+					.map(
+						(config, index) => `
+                <div class="docker-item">
+                    <div class="docker-header">
+                        <span class="docker-title">${escapeHTML(
+													config.name
+												)}</span>
+                        <div class="flex gap-2">
+                            <button class="button button-secondary button-sm" onclick="editDockerConfig('${repoName}', ${index})">
+                                Edit
+                            </button>
+                            <button class="button button-destructive button-sm" onclick="deleteDockerConfig('${repoName}', ${index})">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 mb-2" style="font-size: 0.875rem; color: hsl(215.4 16.3% 46.9%);">
+                        <div><strong>Image:</strong> ${escapeHTML(
+													config.image
+												)}</div>
+                        ${
+													config.port
+														? `<div><strong>Port:</strong> ${escapeHTML(
+																config.port
+														  )}</div>`
+														: "<div></div>"
+												}
+                        ${
+													config.volume
+														? `<div><strong>Volume:</strong> ${escapeHTML(
+																config.volume
+														  )}</div>`
+														: "<div></div>"
+												}
+                        <div><strong>Env Vars:</strong> ${
+													config.envVars.length
+												}</div>
+                    </div>
+                    ${
+											config.envVars.length > 0
+												? `
+                        <div class="code-block">
+                            
+                            ${escapeHTML(
+															config.envVars
+																.map((v) => `${v.name}=${v.value}`)
+																.join("\n")
+														)}
+                        </div>
+                    `
+												: ""
+										}
+                </div>
+            `
+					)
+					.join("");
+			}
+
+			function editDockerConfig(repoName, index) {
+				const repo = repositories[repoName];
+				const config = repo.dockerConfigs[index];
+
+				currentRepo = repoName;
+				tempDockerEnvVars = [...config.envVars];
+				editingDockerIndex = index;
+
+				// Populate form
+				document.getElementById("dockerName").value = config.name;
+				document.getElementById("dockerImage").value = config.image;
+				document.getElementById("dockerPort").value = config.port || "";
+				document.getElementById("dockerVolume").value = config.volume || "";
+				document.getElementById("dockerBulkEnv").value = "";
+				document.getElementById("dockerEnvName").value = "";
+				document.getElementById("dockerEnvValue").value = "";
+
+				document.getElementById("dockerModal").style.display = "block";
+				renderDockerEnvVarsList();
+			}
+
+			function deleteDockerConfig(repoName, index) {
+				if (
+					!confirm("Are you sure you want to delete this Docker configuration?")
+				) {
+					return;
+				}
+
+				const repo = repositories[repoName];
+				repo.dockerConfigs.splice(index, 1);
+				renderDockerConfigsDisplay(repoName);
+
+				// Update count in header
+				const headerElements = document.querySelectorAll(
+					`#repoDetails .section-title`
+				);
+				if (headerElements[1]) {
+					headerElements[1].textContent = `Docker Configurations (${repo.dockerConfigs.length})`;
+				}
+			}
+
+			// Team Management
+			function addMember() {
+				const name = document.getElementById("memberName").value.trim();
+				const role = document.getElementById("memberRole").value;
+
+				if (!name) {
+					alert("Please enter member name");
+					return;
+				}
+
+				teamMembers[role].push(name);
+				document.getElementById("memberName").value = "";
+				renderTeamMembers();
+			}
+
+			function removeMember(role, index) {
+				teamMembers[role].splice(index, 1);
+				renderTeamMembers();
+			}
+
+			function renderTeamMembers() {
+				const container = document.getElementById("teamLists");
+
+				const hasMembers = Object.values(teamMembers).some(
+					(members) => members.length > 0
+				);
+				if (!hasMembers) {
+					container.innerHTML =
+						'<p style="color: hsl(215.4 16.3% 46.9%); font-style: italic;">No team members added yet</p>';
+					return;
+				}
+
+				container.innerHTML = Object.keys(teamMembers)
+					.filter((role) => teamMembers[role].length > 0)
+					.map(
+						(role) => `
+                    <div class="mt-4">
+                        <h3 style="font-weight: 600; margin-bottom: 0.5rem;">${role} (${
+							teamMembers[role].length
+						})</h3>
+                        <div style="border: 1px solid hsl(214.3 31.8% 91.4%); border-radius: 0.375rem; overflow: hidden;">
+                            ${teamMembers[role]
+															.map(
+																(member, index) => `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid hsl(214.3 31.8% 91.4%);">
+                                    <span>${escapeHTML(member)}</span>
+                                    <button class="button button-destructive button-sm" onclick="removeMember('${role}', ${index})">
+                                        Remove
+                                    </button>
+                                </div>
+                            `
+															)
+															.join("")}
+                        </div>
+                    </div>
+                `
+					)
+					.join("");
+			}
+
+			// Export/Import
+			function exportData() {
+				const exportData = {
+					repositories: repositories,
+					teamMembers: teamMembers,
+					projectName: document.getElementById("projectName").value,
+					exportDate: new Date().toISOString(),
+				};
+
+				const dataStr = JSON.stringify(exportData, null, 2);
+				const dataUri =
+					"data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+				const link = document.createElement("a");
+				link.setAttribute("href", dataUri);
+				link.setAttribute(
+					"download",
+					`project-env-${new Date().toISOString().slice(0, 10)}.json`
+				);
+				link.click();
+			}
+
+			function importData() {
+				const input = document.createElement("input");
+				input.type = "file";
+				input.accept = ".json";
+
+				input.onchange = (e) => {
+					const file = e.target.files[0];
+					if (!file) return;
+
+					const reader = new FileReader();
+					reader.onload = function (event) {
+						try {
+							const importedData = JSON.parse(event.target.result);
+
+							if (
+								Object.keys(repositories).length > 0 ||
+								Object.values(teamMembers).some((members) => members.length > 0)
+							) {
+								if (
+									!confirm("This will replace all existing data. Continue?")
+								) {
+									return;
+								}
+							}
+
+							// Import repositories
+							Object.keys(repositories).forEach(
+								(key) => delete repositories[key]
+							);
+							if (importedData.repositories) {
+								Object.keys(importedData.repositories).forEach((key) => {
+									repositories[key] = importedData.repositories[key];
+									// Ensure dockerConfigs exists for backward compatibility
+									if (!repositories[key].dockerConfigs) {
+										repositories[key].dockerConfigs = [];
+									}
+								});
+							}
+
+							// Import team members
+							Object.keys(teamMembers).forEach((role) => {
+								teamMembers[role] = importedData.teamMembers?.[role] || [];
+							});
+
+							// Import project name
+							if (importedData.projectName) {
+								document.getElementById("projectName").value =
+									importedData.projectName;
+								updateProjectInfo();
+							}
+
+							initRepositories();
+							renderTeamMembers();
+							alert("Project data imported successfully!");
+						} catch (error) {
+							alert("Error importing file: " + error.message);
+						}
+					};
+					reader.readAsText(file);
+				};
+
+				input.click();
+			}
+
+			function saveToHtmlFile() {
+				const projectName = escapeHTML(
+					document.getElementById("projectName").value || ""
+				);
+
+				// Generate repositories HTML
+				let reposHTML = "";
+				Object.keys(repositories).forEach((repoName) => {
+					const repo = repositories[repoName];
+
+					// Environment variables in env=value format only
+					let envVarsHTML = "";
+					if (repo.envVars.length > 0) {
+						const envText = repo.envVars
+							.map((v) => `${v.name}=${v.value}`)
+							.join("\n");
+						envVarsHTML = `<h4>Environment Variables</h4><div style="background: #f8f9fa; padding: 1rem; border-radius: 0.375rem; margin: 1rem 0; border: 1px solid #e9ecef; font-family: monospace; white-space: pre-wrap; position: relative;">${escapeHTML(
+							envText
+						)}</div>`;
+					}
+
+					// Docker configurations with env vars in env=value format
+					let dockerHTML = "";
+					if (repo.dockerConfigs.length > 0) {
+						dockerHTML = `<h4>Docker Configurations</h4>${repo.dockerConfigs
+							.map(
+								(config) =>
+									`<div style="border: 1px solid #dee2e6; border-radius: 0.375rem; padding: 1rem; margin: 1rem 0; background: #f8f9fa;"><h5>${escapeHTML(
+										config.name
+									)}</h5><p><strong>Image:</strong> ${escapeHTML(
+										config.image
+									)}</p>${
+										config.port
+											? `<p><strong>Port:</strong> ${escapeHTML(
+													config.port
+											  )}</p>`
+											: ""
+									}${
+										config.volume
+											? `<p><strong>Volume:</strong> ${escapeHTML(
+													config.volume
+											  )}</p>`
+											: ""
+									}${
+										config.envVars.length > 0
+											? `<h6>Environment Variables:</h6><div style="background: #fff; padding: 1rem; border-radius: 0.375rem; margin: 0.5rem 0; border: 1px solid #e9ecef; font-family: monospace; white-space: pre-wrap; position: relative;">${escapeHTML(
+													config.envVars
+														.map((v) => `${v.name}=${v.value}`)
+														.join("\n")
+											  )}</div>`
+											: ""
+									}</div>`
+							)
+							.join("")}`;
+					}
+
+					reposHTML += `<div style="border: 1px solid #dee2e6; border-radius: 0.5rem; padding: 1.5rem; margin: 1.5rem 0;"><h3>${escapeHTML(
+						repoName
+					)}</h3><p><strong>URL:</strong> ${escapeHTML(
+						repo.url
+					)}</p><p><strong>Branch:</strong> ${escapeHTML(
+						repo.branch
+					)}</p>${envVarsHTML}${dockerHTML}</div>`;
+				});
+
+				// Generate team members HTML
+				let teamHTML = "";
+				Object.keys(teamMembers).forEach((role) => {
+					if (teamMembers[role].length > 0) {
+						teamHTML += `<div style="margin: 1rem 0;"><h4>${role} (${
+							teamMembers[role].length
+						})</h4><ul style="margin-left: 1.5rem;">${teamMembers[role]
+							.map((member) => `<li>${escapeHTML(member)}</li>`)
+							.join("")}</ul></div>`;
+					}
+				});
+
+				const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Environment Documentation</title>
+    <style>
+        body { font-family: ui-sans-serif, system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 2rem; line-height: 1.6; }
+        h1, h2, h3, h4, h5, h6 { color: #1f2937; margin: 1rem 0 0.5rem 0; }
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; }
+        h3 { font-size: 1.25rem; }
+        .alert { background: #fef3cd; border: 1px solid #ffeaa7; border-radius: 0.375rem; padding: 1rem; margin: 1rem 0; }
+    </style>
+   
+</head>
+<body>
+    <h1>Project Environment Documentation</h1>
+    <p><strong>Project:</strong> ${projectName || "[Not Provided]"}</p>
+    <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+    <h2>Repositories</h2>
+    ${reposHTML || "<p>No repositories configured</p>"}
+    <h2>Team Members</h2>
+    ${teamHTML || "<p>No team members added</p>"}
+   
+</body>
+</html>`;
+
+				const blob = new Blob([fullHTML], { type: "text/html" });
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = `project-documentation-${new Date()
+					.toISOString()
+					.slice(0, 10)}.html`;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(url);
+			}
+
+			// Initialize
+			function init() {
+				initRepositories();
+				renderTeamMembers();
+
+				// Close modals when clicking outside
+				document.querySelectorAll(".modal").forEach((modal) => {
+					modal.addEventListener("click", function (e) {
+						if (e.target === this) {
+							modal.style.display = "none";
+						}
+					});
+				});
+
+				// Enter key handlers
+				document
+					.getElementById("memberName")
+					.addEventListener("keypress", function (e) {
+						if (e.key === "Enter") addMember();
+					});
+
+				document
+					.getElementById("newRepoName")
+					.addEventListener("keypress", function (e) {
+						if (e.key === "Enter") addRepository();
+					});
+
+				document
+					.getElementById("newEnvName")
+					.addEventListener("keypress", function (e) {
+						if (e.key === "Enter")
+							document.getElementById("newEnvValue").focus();
+					});
+
+				document
+					.getElementById("newEnvValue")
+					.addEventListener("keypress", function (e) {
+						if (e.key === "Enter") addEnvVar();
+					});
+
+				document
+					.getElementById("dockerEnvName")
+					.addEventListener("keypress", function (e) {
+						if (e.key === "Enter")
+							document.getElementById("dockerEnvValue").focus();
+					});
+
+				document
+					.getElementById("dockerEnvValue")
+					.addEventListener("keypress", function (e) {
+						if (e.key === "Enter") addDockerEnvVar();
+					});
+			}
+
+			// Initialize when page loads
+			window.addEventListener("DOMContentLoaded", init);
+		</script>
+	</body>
+</html>
