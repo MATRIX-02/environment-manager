@@ -129,16 +129,16 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 				{/* Header */}
 				<div className="flex items-center justify-between mb-8">
 					<div>
-						<h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+						<h1 className="text-2xl font-bold text-foreground">
 							Repository Management
 						</h1>
-						<p className="text-gray-600 dark:text-gray-400">
+						<p className="text-muted-foreground">
 							Manage environment variables and Docker configurations
 						</p>
 					</div>
 
 					{/* Repository Selector */}
-					<div className="flex items-center gap-4">
+					<div className="flex items-center gap-4 text-foreground">
 						<div className="w-80">
 							<Select
 								value={selectedRepo}
@@ -147,10 +147,10 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 								<SelectTrigger>
 									<SelectValue placeholder="Select a repository..." />
 								</SelectTrigger>
-								<SelectContent>
+								<SelectContent className="bg-background">
 									{repoOptions.map((repoName) => (
 										<SelectItem key={repoName} value={repoName}>
-											<div className="flex items-center gap-2">
+											<div className="flex items-center gap-2 ">
 												<GitBranch className="w-4 h-4" />
 												{repoName}
 											</div>
@@ -262,7 +262,7 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 									onChange={(e) =>
 										onUpdateRepositoryBranch(selectedRepo, e.target.value)
 									}
-									className="mt-1 font-mono"
+									className="mt-1 font-mono dark:text-gray-300"
 									placeholder="main"
 								/>
 							</div>
@@ -275,8 +275,8 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 									onClick={() => setActiveSection("env")}
 									className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
 										activeSection === "env"
-											? "border-gray-900 text-gray-900"
-											: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+											? "border-gray-900 text-gray-900 dark:text-gray-100 dark:border-gray-100"
+											: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200"
 									}`}
 								>
 									<div className="flex items-center gap-2">
@@ -288,8 +288,8 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 									onClick={() => setActiveSection("docker")}
 									className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
 										activeSection === "docker"
-											? "border-gray-900 text-gray-900"
-											: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+											? "border-gray-900 text-gray-900 dark:text-gray-100 dark:border-gray-100"
+											: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200"
 									}`}
 								>
 									<div className="flex items-center gap-2">

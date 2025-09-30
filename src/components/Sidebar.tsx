@@ -1,11 +1,5 @@
 import React from "react";
-import {
-	GitBranch,
-	Users,
-	Settings,
-	BarChart3,
-	FileText,
-} from "lucide-react";
+import { GitBranch, Users, Settings, BarChart3, FileText } from "lucide-react";
 import { Repository, TeamMembers } from "@/types";
 
 interface SidebarProps {
@@ -78,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
 			{/* Project Info */}
 			{projectName && (
-				<div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
+				<div className="p-6 border-b border-border  bg-card ">
 					<div className="flex items-center gap-3">
 						<FileText className="w-5 h-5 text-gray-600 dark:text-gray-400" />
 						<div className="min-w-0 flex-1">

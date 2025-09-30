@@ -13,7 +13,16 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from "@/components/ui/dialog";
-import { Edit, Plus, Trash2, Container, FileIcon, Copy, Terminal, Play } from "lucide-react";
+import {
+	Edit,
+	Plus,
+	Trash2,
+	Container,
+	FileIcon,
+	Copy,
+	Terminal,
+	Play,
+} from "lucide-react";
 import { DockerConfig, EnvVar } from "@/types";
 
 interface DockerConfigurationsProps {
@@ -179,42 +188,46 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 
 	const handleCopyEnvVars = (envVars: EnvVar[]) => {
 		if (envVars.length === 0) {
-			alert('No environment variables to copy');
+			alert("No environment variables to copy");
 			return;
 		}
 
-		const envText = envVars.map(v => `${v.name}=${v.value}`).join('\n');
+		const envText = envVars.map((v) => `${v.name}=${v.value}`).join("\n");
 
-		navigator.clipboard.writeText(envText)
+		navigator.clipboard
+			.writeText(envText)
 			.then(() => {
-				alert('Environment variables copied to clipboard!');
+				alert("Environment variables copied to clipboard!");
 			})
 			.catch(() => {
-				const textarea = document.createElement('textarea');
+				const textarea = document.createElement("textarea");
 				textarea.value = envText;
 				document.body.appendChild(textarea);
 				textarea.select();
-				document.execCommand('copy');
+				document.execCommand("copy");
 				document.body.removeChild(textarea);
-				alert('Environment variables copied to clipboard!');
+				alert("Environment variables copied to clipboard!");
 			});
 	};
 
 	const handleCopyDockerBuild = (config: DockerConfig) => {
-		const buildCommand = `docker build -t ${config.name.toLowerCase().replace(/\s+/g, '-')} .`;
+		const buildCommand = `docker build -t ${config.name
+			.toLowerCase()
+			.replace(/\s+/g, "-")} .`;
 
-		navigator.clipboard.writeText(buildCommand)
+		navigator.clipboard
+			.writeText(buildCommand)
 			.then(() => {
-				alert('Docker build command copied to clipboard!');
+				alert("Docker build command copied to clipboard!");
 			})
 			.catch(() => {
-				const textarea = document.createElement('textarea');
+				const textarea = document.createElement("textarea");
 				textarea.value = buildCommand;
 				document.body.appendChild(textarea);
 				textarea.select();
-				document.execCommand('copy');
+				document.execCommand("copy");
 				document.body.removeChild(textarea);
-				alert('Docker build command copied to clipboard!');
+				alert("Docker build command copied to clipboard!");
 			});
 	};
 
@@ -232,30 +245,33 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 		}
 
 		// Add environment variables
-		config.envVars.forEach(env => {
+		config.envVars.forEach((env) => {
 			runCommand += ` -e ${env.name}="${env.value}"`;
 		});
 
 		// Add container name and image
-		runCommand += ` --name ${config.name.toLowerCase().replace(/\s+/g, '-')} ${config.image}`;
+		runCommand += ` --name ${config.name.toLowerCase().replace(/\s+/g, "-")} ${
+			config.image
+		}`;
 
-		navigator.clipboard.writeText(runCommand)
+		navigator.clipboard
+			.writeText(runCommand)
 			.then(() => {
-				alert('Docker run command copied to clipboard!');
+				alert("Docker run command copied to clipboard!");
 			})
 			.catch(() => {
-				const textarea = document.createElement('textarea');
+				const textarea = document.createElement("textarea");
 				textarea.value = runCommand;
 				document.body.appendChild(textarea);
 				textarea.select();
-				document.execCommand('copy');
+				document.execCommand("copy");
 				document.body.removeChild(textarea);
-				alert('Docker run command copied to clipboard!');
+				alert("Docker run command copied to clipboard!");
 			});
 	};
 
 	return (
-		<div className="space-y-4">
+		<div className="space-y-4 text-foreground">
 			<div className="flex justify-between items-center">
 				<div>
 					<h3 className="text-lg font-semibold">Docker Configurations</h3>
@@ -265,7 +281,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 				</div>
 				<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
 					<DialogTrigger asChild>
-						<Button onClick={() => openModal()}>
+						<Button onClick={() => openModal()} className="text-white">
 							<Plus className="w-4 h-4 mr-2" />
 							Add Docker Config
 						</Button>

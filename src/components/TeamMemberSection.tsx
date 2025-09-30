@@ -27,10 +27,34 @@ const roleIcons = {
 };
 
 const memberSuggestions = {
-	Frontend: ["John Doe", "Jane Smith", "Alex Johnson", "Sarah Wilson"],
-	Backend: ["Mike Chen", "Emily Davis", "David Brown", "Lisa Garcia"],
-	"AI/ML": ["Dr. James Lee", "Anna Rodriguez", "Chris Kim", "Maya Patel"],
-	DevOps: ["Tom Wilson", "Jessica Clark", "Ryan Taylor", "Nicole Adams"],
+	Frontend: [
+		"Mayank",
+		"Komal Solanki",
+		"Yash Sharma - Rishabh",
+		"Sarthak Bhatt",
+		"Aditya Gaikwad",
+		"Siddhant Mahato",
+	],
+	Backend: [
+		"Aryan Chaurasia",
+		"Kshitij Singla",
+		"Siddhant Mahato",
+		"Rama Prasad Das",
+		"Aslam Mohommad Shaikh",
+		"Sai Ganesh Reddy",
+		"Yaswanth",
+		"Aditya Gaikwad",
+		"Ashraf Shaikh",
+		"Gaurav",
+	],
+	"AI/ML": [
+		"Aslam Mohommad Shaikh",
+		"Sai Ganesh Reddy",
+		"Gaurav",
+		"Pranali",
+		"Ashraf Shaikh",
+	],
+	DevOps: ["Aryan Agrawal", "Manshi Dubey", "Harshit Agarwal", "Yash Sharma"],
 };
 
 export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
@@ -97,7 +121,7 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 			<div className="max-w-7xl mx-auto">
 				{/* Header */}
 				<div className="mb-8">
-					<h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+					<h1 className="text-2xl font-bold text-foreground">
 						Team Management
 					</h1>
 					<p className="text-gray-600 dark:text-gray-400">
@@ -107,8 +131,8 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 
 				<div className="space-y-8">
 					{/* Add Member Form */}
-					<div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6">
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+					<div className="bg-card border border-border  rounded-lg p-6">
+						<h3 className="text-lg font-semibold text-foreground mb-4">
 							Add Team Member
 						</h3>
 
@@ -116,7 +140,7 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 							<div className="relative">
 								<Label
 									htmlFor="memberName"
-									className="text-sm font-medium text-gray-700 dark:text-gray-300"
+									className="text-sm font-medium text-foreground"
 								>
 									Member Name
 								</Label>
@@ -132,11 +156,11 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 
 								{/* Name Suggestions */}
 								{showSuggestions && filteredSuggestions.length > 0 && (
-									<div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg">
+									<div className="absolute z-10 w-full mt-1 bg-card border border-border rounded-lg shadow-lg text-foreground">
 										{filteredSuggestions.slice(0, 4).map((name, index) => (
 											<button
 												key={index}
-												className="w-full text-left px-3 py-2 hover:bg-gray-50 first:rounded-t-lg last:rounded-b-lg"
+												className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-600 first:rounded-t-lg last:rounded-b-lg"
 												onMouseDown={() => handleSuggestionClick(name)}
 											>
 												{name}
@@ -149,7 +173,7 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 							<div>
 								<Label
 									htmlFor="memberRole"
-									className="text-sm font-medium text-gray-700 dark:text-gray-300"
+									className="text-sm font-medium text-foreground"
 								>
 									Role
 								</Label>
@@ -160,12 +184,12 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 									<SelectTrigger className="mt-1">
 										<SelectValue placeholder="Select role" />
 									</SelectTrigger>
-									<SelectContent>
+									<SelectContent className="text-foreground bg-card">
 										{Object.keys(teamMembers).map((role) => {
 											const IconComponent = roleIcons[role as TeamRole];
 											return (
 												<SelectItem key={role} value={role}>
-													<div className="flex items-center gap-2 dark:text-gray-300">
+													<div className="flex items-center gap-2 dark:text-gray-300 ">
 														<IconComponent className="w-4 h-4 " />
 														{role}
 													</div>
@@ -207,12 +231,12 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 
 					{/* Team Overview */}
 					{!hasMembers ? (
-						<div className="text-center py-16 bg-gray-50 dark:bg-gray-700 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+						<div className="text-center py-16 bg-card rounded-lg border-2 border-dashed border-border">
 							<Users className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-							<h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
+							<h3 className="text-xl font-semibold text-foreground  mb-2">
 								No Team Members Yet
 							</h3>
-							<p className="text-gray-500 dark:text-gray-400">
+							<p className="text-muted-foreground">
 								Add your first team member to get started
 							</p>
 						</div>
@@ -250,9 +274,9 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 									return (
 										<div
 											key={role}
-											className="bg-white border border-gray-200 rounded-lg p-6"
+											className="bg-card border border-border rounded-lg p-6"
 										>
-											<h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+											<h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
 												<IconComponent className="w-5 h-5" />
 												{role} ({members.length})
 											</h4>
@@ -289,14 +313,14 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 													) => (
 														<div
 															key={index}
-															className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+															className="flex items-start justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 dark:bg-gray-900 transition-colors"
 														>
 															<div className="flex-1 min-w-0">
-																<div className="font-semibold text-gray-900">
+																<div className="font-semibold text-foreground">
 																	{member.name}
 																</div>
 																{member.contribution && (
-																	<div className="text-sm text-gray-600 mt-1">
+																	<div className="text-sm text-muted-foreground mt-1">
 																		{member.contribution}
 																	</div>
 																)}
