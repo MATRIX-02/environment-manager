@@ -45,7 +45,7 @@ function App() {
 
 	return (
 		<div className={darkMode ? "dark" : ""}>
-			<div className="h-screen w-screen bg-gray-50 dark:bg-gray-900 flex overflow-hidden transition-colors">
+			<div className="h-screen w-screen bg-background flex overflow-hidden transition-colors">
 				{/* Sidebar */}
 				<Sidebar
 					activeSection={activeSection}

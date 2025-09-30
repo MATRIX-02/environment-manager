@@ -115,6 +115,9 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 							const volumeEl = dockerEl.querySelector(
 								'.detail-item:contains("Volume:")'
 							);
+							const repositoryEl = dockerEl.querySelector(
+								'.detail-item:contains("Repository:")'
+							);
 
 							const dockerEnvEl = dockerEl.querySelector(".env-content.small");
 							const dockerEnvVars: any[] = [];
@@ -142,6 +145,10 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 									volume:
 										volumeEl?.textContent?.replace("Volume:", "").trim() ||
 										undefined,
+									repository:
+										repositoryEl?.textContent
+											?.replace("Repository:", "")
+											.trim() || undefined,
 									envVars: dockerEnvVars,
 								});
 							}
@@ -201,8 +208,13 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 	};
 
 	const handleExportHTML = () => {
+		if (!projectName.trim()) {
+			alert("Please enter a project name before exporting");
+			return;
+		}
+
 		const data = onExportData();
-		const projectName = data.projectName || "[Not Provided]";
+		const projectNameForExport = data.projectName || "[Not Provided]";
 
 		// Generate repositories HTML with improved styling
 		let reposHTML = "";
@@ -246,8 +258,28 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 								(config) => `
               <div class="docker-config">
                 <div class="config-header">
-                  <h5>${config.name}</h5>
-                  <span class="image-tag">${config.image}</span>
+                  <div class="config-info">
+                    <h5>${config.name}</h5>
+                    <span class="image-tag">${config.image}</span>
+                  </div>
+                  <div class="docker-actions">
+                    <button class="copy-btn small" onclick="copyDockerBuild('${config.name
+											.toLowerCase()
+											.replace(
+												/\s+/g,
+												"-"
+											)}')" title="Copy Docker build command">
+                      <i class="fas fa-terminal"></i> Build
+                    </button>
+                    <button class="copy-btn small" onclick="copyDockerRun('${JSON.stringify(
+											config
+										).replace(
+											/"/g,
+											"&quot;"
+										)}')" title="Copy Docker run command">
+                      <i class="fas fa-play"></i> Run
+                    </button>
+                  </div>
                 </div>
                 <div class="config-details">
                   ${
@@ -258,6 +290,11 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                   ${
 										config.volume
 											? `<div class="detail-item"><strong>Volume:</strong> ${config.volume}</div>`
+											: ""
+									}
+                  ${
+										config.repository
+											? `<div class="detail-item"><strong>Repository:</strong> <a href="${config.repository}" target="_blank" rel="noopener noreferrer" style="color: #1e40af; text-decoration: underline;">${config.repository}</a></div>`
 											: ""
 									}
                   ${
@@ -338,31 +375,37 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Environment Documentation - ${projectName}</title>
+    <title>Project Environment Documentation - ${projectNameForExport}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #f8fafc;
             color: #1e293b;
             line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0;
         }
 
         .header {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             color: white;
-            padding: 3rem;
-            border-radius: 12px;
-            margin-bottom: 3rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 3rem 2rem;
+            margin: 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .header h1 {
@@ -382,31 +425,42 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             opacity: 0.7;
         }
 
+        .main-content {
+            padding: 3rem 2rem;
+        }
+
         .section {
             margin-bottom: 3rem;
         }
 
         .section-title {
-            font-size: 1.75rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
             color: #1e293b;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
         }
 
         .repository-card {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             margin-bottom: 2rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
             overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .repository-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+            transform: translateY(-1px);
         }
 
         .repo-header {
             background: #f8fafc;
-            padding: 1.5rem;
+            padding: 2rem;
             border-bottom: 1px solid #e2e8f0;
         }
 
@@ -432,21 +486,22 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         }
 
         .env-section, .docker-section {
-            padding: 1.5rem;
+            padding: 2rem;
         }
 
         .section-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .section-header h4 {
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-size: 1.1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
             color: #1e293b;
         }
 
@@ -458,14 +513,17 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.875rem;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.5rem;
             transition: all 0.2s;
+            font-weight: 500;
         }
 
         .copy-btn:hover {
             background: #334155;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .copy-btn.small {
@@ -500,15 +558,31 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             background: #f8fafc;
             border-radius: 8px;
             padding: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             border: 1px solid #e2e8f0;
         }
 
         .config-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .config-info {
+            flex: 1;
+        }
+
+        .config-info h5 {
+            margin-bottom: 0.5rem;
+        }
+
+        .docker-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-shrink: 0;
         }
 
         .config-header h5 {
@@ -549,8 +623,9 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         .team-role {
             background: white;
             border-radius: 8px;
-            padding: 1.5rem;
+            padding: 2rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
         }
 
         .team-role h4 {
@@ -601,31 +676,100 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         .success-message.show {
             transform: translateX(0);
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 2rem 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .config-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .docker-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .config-details {
+                grid-template-columns: 1fr;
+            }
+
+            .team-section {
+                grid-template-columns: 1fr;
+            }
+
+            .copy-btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                padding: 1.5rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .main-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .docker-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .copy-btn.small {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-project-diagram"></i> ${projectName}</h1>
+            <h1><i class="fas fa-project-diagram"></i> ${projectNameForExport}</h1>
             <div class="subtitle">Project Environment Documentation</div>
             <div class="generated-date">Generated on ${new Date().toLocaleString()}</div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title"><i class="fas fa-code-branch"></i> Repositories</h2>
-            ${
-							reposHTML ||
-							'<div style="text-align: center; padding: 2rem; color: #64748b;">No repositories configured</div>'
-						}
-        </div>
-
-        <div class="section">
-            <h2 class="section-title"><i class="fas fa-users"></i> Team Members</h2>
-            <div class="team-section">
+        <div class="main-content">
+            <div class="section">
+                <h2 class="section-title"><i class="fas fa-code-branch"></i> Repositories</h2>
                 ${
-									teamHTML ||
-									'<div style="text-align: center; padding: 2rem; color: #64748b;">No team members added</div>'
+									reposHTML ||
+									'<div style="text-align: center; padding: 2rem; color: #64748b;">No repositories configured</div>'
 								}
+            </div>
+
+            <div class="section">
+                <h2 class="section-title"><i class="fas fa-users"></i> Team Members</h2>
+                <div class="team-section">
+                    ${
+											teamHTML ||
+											'<div style="text-align: center; padding: 2rem; color: #64748b;">No team members added</div>'
+										}
+                </div>
             </div>
         </div>
     </div>
@@ -669,6 +813,60 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
                 message.classList.remove('show');
             }, 2000);
         }
+
+        function copyDockerBuild(containerName) {
+            const buildCommand = \`docker build -t \${containerName} .\`;
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(buildCommand).then(() => {
+                    showSuccessMessage();
+                }).catch(() => {
+                    fallbackCopy(buildCommand);
+                });
+            } else {
+                fallbackCopy(buildCommand);
+            }
+        }
+
+        function copyDockerRun(configJson) {
+            try {
+                const config = JSON.parse(configJson.replace(/&quot;/g, '"'));
+                let runCommand = 'docker run';
+
+                // Add port mapping
+                if (config.port) {
+                    runCommand += \` -d -p \${config.port}\`;
+                }
+
+                // Add volume mapping
+                if (config.volume) {
+                    runCommand += \` -v \${config.volume}\`;
+                }
+
+                // Add environment variables
+                if (config.envVars && config.envVars.length > 0) {
+                    config.envVars.forEach(env => {
+                        runCommand += \` -e \${env.name}="\${env.value}"\`;
+                    });
+                }
+
+                // Add container name and image
+                runCommand += \` --name \${config.name.toLowerCase().replace(/\\s+/g, '-')} \${config.image}\`;
+
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(runCommand).then(() => {
+                        showSuccessMessage();
+                    }).catch(() => {
+                        fallbackCopy(runCommand);
+                    });
+                } else {
+                    fallbackCopy(runCommand);
+                }
+            } catch (error) {
+                console.error('Error parsing Docker config:', error);
+                alert('Error generating Docker run command');
+            }
+        }
     </script>
 </body>
 </html>`;
@@ -677,7 +875,7 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = `${projectName
+		a.download = `${projectNameForExport
 			.replace(/[^a-z0-9]/gi, "-")
 			.toLowerCase()}-documentation-${new Date()
 			.toISOString()
@@ -701,6 +899,11 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 							placeholder="Enter project name..."
 							className="pl-10 border-2 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 focus:bg-white dark:focus:bg-gray-600 focus:ring-2 focus:ring-gray-900 dark:focus:ring-gray-500 transition-all dark:text-white dark:placeholder-gray-400"
 						/>
+						{!projectName.trim() && (
+							<div className="absolute top-full left-0 mt-0 text-xs text-red-500 dark:text-red-400">
+								Project name is required for export
+							</div>
+						)}
 					</div>
 				</div>
 
@@ -716,7 +919,8 @@ export const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 					</Button>
 					<Button
 						onClick={handleExportHTML}
-						className="bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white"
+						disabled={!projectName.trim()}
+						className="bg-gray-900 dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
 					>
 						<FileText className="w-4 h-4 mr-2" />
 						Export

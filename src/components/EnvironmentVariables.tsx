@@ -147,8 +147,12 @@ export const EnvironmentVariables: React.FC<EnvironmentVariablesProps> = ({
 					</Dialog>
 
 					{envVars.length > 0 && (
-						<Button variant="outline" onClick={handleCopyAll}>
-							<Copy className="w-4 h-4 mr-2" />
+						<Button
+							variant="outline"
+							onClick={handleCopyAll}
+							className="text-foreground"
+						>
+							<Copy className="w-4 h-4 mr-2 " />
 							Copy All
 						</Button>
 					)}

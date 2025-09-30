@@ -177,12 +177,9 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
 							Add New Repository
 						</h3>
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-foreground">
 							<div>
-								<Label
-									htmlFor="newRepoName"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="newRepoName" className="text-sm font-medium ">
 									Repository Name
 								</Label>
 								<Input
@@ -194,10 +191,7 @@ export const RepositorySection: React.FC<RepositorySectionProps> = ({
 								/>
 							</div>
 							<div>
-								<Label
-									htmlFor="newRepoUrl"
-									className="text-sm font-medium text-gray-700"
-								>
+								<Label htmlFor="newRepoUrl" className="text-sm font-medium ">
 									Repository URL
 								</Label>
 								<Input

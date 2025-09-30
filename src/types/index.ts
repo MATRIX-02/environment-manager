@@ -9,6 +9,7 @@ export interface DockerConfig {
   image: string;
   port?: string;
   volume?: string;
+  repository?: string;
   envVars: EnvVar[];
 }
 

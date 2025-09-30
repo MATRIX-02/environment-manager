@@ -54,6 +54,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 		image: "",
 		port: "",
 		volume: "",
+		repository: "",
 	});
 	const [tempEnvVars, setTempEnvVars] = useState<EnvVar[]>([]);
 	const [newEnvName, setNewEnvName] = useState("");
@@ -66,6 +67,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 			image: "",
 			port: "",
 			volume: "",
+			repository: "",
 		});
 		setTempEnvVars([]);
 		setNewEnvName("");
@@ -81,6 +83,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 				image: config.image,
 				port: config.port || "",
 				volume: config.volume || "",
+				repository: config.repository || "",
 			});
 			setTempEnvVars([...config.envVars]);
 			setEditingIndex(index);
@@ -106,6 +109,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 			image: formData.image.trim(),
 			port: formData.port.trim() || undefined,
 			volume: formData.volume.trim() || undefined,
+			repository: formData.repository.trim() || undefined,
 			envVars: [...tempEnvVars],
 		};
 
@@ -236,7 +240,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 
 		// Add port mapping
 		if (config.port) {
-			runCommand += ` -p ${config.port}`;
+			runCommand += ` -d -p ${config.port}`;
 		}
 
 		// Add volume mapping
@@ -286,7 +290,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 							Add Docker Config
 						</Button>
 					</DialogTrigger>
-					<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+					<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-card text-foreground">
 						<DialogHeader>
 							<DialogTitle>
 								{editingIndex >= 0
@@ -311,7 +315,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 											setFormData({ ...formData, name: e.target.value })
 										}
 										placeholder="my-app-container"
-										className="mt-2"
+										className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 									/>
 								</div>
 								<div>
@@ -323,9 +327,24 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 											setFormData({ ...formData, image: e.target.value })
 										}
 										placeholder="node:18-alpine"
-										className="mt-2"
+										className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 									/>
 								</div>
+							</div>
+
+							<div>
+								<Label htmlFor="dockerRepository">
+									Repository Link (Optional)
+								</Label>
+								<Input
+									id="dockerRepository"
+									value={formData.repository}
+									onChange={(e) =>
+										setFormData({ ...formData, repository: e.target.value })
+									}
+									placeholder="https://github.com/username/repository"
+									className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+								/>
 							</div>
 
 							<div className="grid grid-cols-2 gap-4">
@@ -338,7 +357,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 											setFormData({ ...formData, port: e.target.value })
 										}
 										placeholder="3000:3000"
-										className="mt-2"
+										className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 									/>
 								</div>
 								<div>
@@ -350,7 +369,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 											setFormData({ ...formData, volume: e.target.value })
 										}
 										placeholder="./src:/app/src"
-										className="mt-2"
+										className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 									/>
 								</div>
 							</div>
@@ -369,7 +388,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 										value={bulkEnvText}
 										onChange={(e) => setBulkEnvText(e.target.value)}
 										placeholder="Paste your .env file content here..."
-										className="mt-2 min-h-[80px] font-mono"
+										className="mt-2 min-h-[80px] font-mono dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 									/>
 									<Button
 										onClick={handleParseBulkEnv}
@@ -390,7 +409,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 											value={newEnvName}
 											onChange={(e) => setNewEnvName(e.target.value)}
 											placeholder="VARIABLE_NAME"
-											className="mt-2"
+											className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 										/>
 									</div>
 									<div>
@@ -400,7 +419,7 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 											value={newEnvValue}
 											onChange={(e) => setNewEnvValue(e.target.value)}
 											placeholder="variable_value"
-											className="mt-2"
+											className="mt-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
 										/>
 									</div>
 								</div>
@@ -413,18 +432,21 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 								{tempEnvVars.length > 0 && (
 									<div>
 										<Label>Current Variables ({tempEnvVars.length})</Label>
-										<div className="mt-2 max-h-48 overflow-y-auto border rounded-md">
+										<div className="mt-2 max-h-48 overflow-y-auto border rounded-md dark:border-gray-600 dark:bg-gray-700">
 											{tempEnvVars.map((envVar, index) => (
 												<div
 													key={index}
-													className="flex items-center justify-between p-3 border-b last:border-b-0"
+													className="flex items-center justify-between p-3 border-b last:border-b-0 dark:border-gray-600"
 												>
 													<div className="font-mono text-sm">
-														<span className="font-semibold text-blue-600">
+														<span className="font-semibold text-blue-600 dark:text-blue-400">
 															{envVar.name}
 														</span>
-														<span className="text-gray-500"> = </span>
-														<span className="text-gray-700">
+														<span className="text-gray-500 dark:text-gray-400">
+															{" "}
+															={" "}
+														</span>
+														<span className="text-gray-700 dark:text-gray-300">
 															{envVar.value}
 														</span>
 													</div>
@@ -527,6 +549,19 @@ export const DockerConfigurations: React.FC<DockerConfigurationsProps> = ({
 									{config.volume && (
 										<div>
 											<strong>Volume:</strong> {config.volume}
+										</div>
+									)}
+									{config.repository && (
+										<div className="col-span-2">
+											<strong>Repository:</strong>{" "}
+											<a
+												href={config.repository}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-blue-600 hover:underline"
+											>
+												{config.repository}
+											</a>
 										</div>
 									)}
 									<div>
