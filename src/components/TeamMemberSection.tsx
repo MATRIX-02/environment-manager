@@ -85,10 +85,6 @@ export const TeamMemberSection: React.FC<TeamMemberSectionProps> = ({
 	const hasMembers = Object.values(teamMembers).some(
 		(members) => members.length > 0
 	);
-	const totalMembers = Object.values(teamMembers).reduce(
-		(total, members) => total + members.length,
-		0
-	);
 
 	const filteredSuggestions = memberSuggestions[memberRole].filter(
 		(name) =>
